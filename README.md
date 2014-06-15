@@ -1,7 +1,7 @@
 CoreDataManager-Swift
 =====================
 
-Swift CoreDataManager for multithreading environments
+Swift CoreDataManager for multithreading environments. This is running under XCode 6 beta - please notice this.
 
 
 Multithreading in CoreData
