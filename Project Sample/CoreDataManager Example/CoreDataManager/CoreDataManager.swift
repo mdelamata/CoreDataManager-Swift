@@ -112,7 +112,7 @@ class CoreDataManager: NSObject {
     
     // #pragma mark - fetches
     
-    func executeFetchRequests(request:NSFetchRequest)-> Array<AnyObject>?{
+    func executeFetchRequest(request:NSFetchRequest)-> Array<AnyObject>?{
 
         var results:Array<AnyObject>?
         self.managedObjectContext.performBlockAndWait{
