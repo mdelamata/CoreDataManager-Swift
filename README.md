@@ -17,7 +17,8 @@ As simple as copying the file `/CoreDataManager.swift`. into your project.
 
 This manager uses the singleton pattern in order to be able of handle different NSManagedObjectContexts per thread automatically.
 
-
+Methods? 
+------------
 #### Fetch Methods
 
 - `executeFetchRequest(request:)`: 
@@ -31,7 +32,7 @@ Fetches results synchronously
 
 - `executeFetchRequest(request:, completionHandler:)`: 
 
-Fetches with a completionHandler that returns an array with results asynchrounously.
+Fetches with a completionHandler that returns an array with results asynchronously.
 
         var myMonkeys:NSArray?
         var request: NSFetchRequest = NSFetchRequest(entityName: "MonkeyEntity")
