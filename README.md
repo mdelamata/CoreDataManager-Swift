@@ -12,7 +12,7 @@ This Swift CoreData Manager can handle multi-threading. You can access to CoreDa
 How to use it? 
 ------------
 
-As simple as copying the file `CoreDataManager.swift`. into your project.
+As simple as copying the file `CoreDataManager.swift` into your project.
 
 
 This manager uses the singleton pattern in order to be able of handle different NSManagedObjectContexts per thread automatically.
