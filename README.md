@@ -58,3 +58,8 @@ Saves the context, it doesn't matters the thread.
 Deletes the NSManagedObject sent
 
         CoreDataManager.shared.deleteEntity(item as MonkeyEntity)
+
+
+Tests
+------------
+Tests are provided to check the performance under a stress case.
