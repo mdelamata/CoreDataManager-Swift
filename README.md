@@ -21,7 +21,7 @@ Methods?
 ------------
 #### Fetch Methods
 
-- `executeFetchRequest(request:)`: 
+- `executeFetchRequest(request:)`
 
 Fetches results synchronously
 
@@ -30,7 +30,7 @@ Fetches results synchronously
         var myMonkeys:NSArray? = CoreDataManager.shared.executeFetchRequest(request)
 
 
-- `executeFetchRequest(request:, completionHandler:)`: 
+- `executeFetchRequest(request:, completionHandler:)`
 
 Fetches with a completionHandler that returns an array with results asynchronously.
 
@@ -45,7 +45,7 @@ Fetches with a completionHandler that returns an array with results asynchronous
        
 #### Save Method
 
-- `save()`: 
+- `save()`
 
 Saves the context, it doesn't matters the thread.
 
@@ -53,7 +53,7 @@ Saves the context, it doesn't matters the thread.
 
 ### Delete Method
 
-- `deleteEntity(object:)`: 
+- `deleteEntity(object:)`
 
 Deletes the NSManagedObject sent
 
