@@ -9,12 +9,12 @@
 import UIKit
 import CoreData
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
+class ViewController: UIViewController, UITableViewDelegate{
     
 
-    @IBOutlet var tableView : UITableView
-    @IBOutlet var actionButton : UIBarButtonItem
-    @IBOutlet var editButton : UIBarButtonItem
+    @IBOutlet weak var tableView : UITableView!
+    @IBOutlet weak var actionButton : UIBarButtonItem!
+    @IBOutlet weak var editButton : UIBarButtonItem!
     
     var datasource : Array<AnyObject> = []
     
@@ -70,7 +70,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         var cell:UITableViewCell = self.tableView.dequeueReusableCellWithIdentifier("cell") as UITableViewCell
         
         var monkey = self.datasource[indexPath.row] as MonkeyEntity
-        cell.textLabel.text = monkey.name
+        cell.textLabel?.text = monkey.name
         
         return cell
     }
@@ -85,12 +85,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         var bananaOption = UIAlertAction(title: "Give banana", style: .Cancel) { action  in
             monkey.name = "\(monkey.name) is grateful"
             self.tableView.reloadData()
-            alert.dismissModalViewControllerAnimated(true)
+            alert.dismissViewControllerAnimated(true, completion: nil)
         }
         var neverOption = UIAlertAction(title: "Never!", style: .Destructive) { action  in
             monkey.name = "\(monkey.name) is angry"
             self.tableView.reloadData()
-            alert.dismissModalViewControllerAnimated(true)
+            alert.dismissViewControllerAnimated(true, completion: nil)
         }
         alert.addAction(bananaOption)
         alert.addAction(neverOption)
@@ -120,21 +120,21 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 
         var saveOption = UIAlertAction(title: "Save", style: .Default) { action  in
             CoreDataManager.shared.save()
-            alert.dismissModalViewControllerAnimated(true)
+            alert.dismissViewControllerAnimated(true, completion: nil)
         }
         
         var reloadOption = UIAlertAction(title: "Reload", style: .Default) { action  in
             self.tableView.reloadData()
-            alert.dismissModalViewControllerAnimated(true)
+            alert.dismissViewControllerAnimated(true, completion: nil)
         }
         
         var destroyOption = UIAlertAction(title: "Delete All", style: .Destructive) { action  in
             self.clearEntities()
-            alert.dismissModalViewControllerAnimated(true)
+            alert.dismissViewControllerAnimated(true, completion: nil)
         }
         
         var cancelOption = UIAlertAction(title: "Cancel", style: .Cancel) { action  in
-            alert.dismissModalViewControllerAnimated(true)
+            alert.dismissViewControllerAnimated(true, completion: nil)
         }
         
         alert.addAction(saveOption)

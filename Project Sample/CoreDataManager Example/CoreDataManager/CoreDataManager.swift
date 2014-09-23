@@ -16,9 +16,9 @@ class CoreDataManager: NSObject {
     let kModmName = "CoreDataManager_Example"
 
     
-    var _managedObjectContext: NSManagedObjectContext? = nil
-    var _managedObjectModel: NSManagedObjectModel? = nil
-    var _persistentStoreCoordinator: NSPersistentStoreCoordinator? = nil
+    var _managedObjectContext: NSManagedObjectContext?
+    var _managedObjectModel: NSManagedObjectModel?
+    var _persistentStoreCoordinator: NSPersistentStoreCoordinator?
     
     
     
@@ -34,20 +34,30 @@ class CoreDataManager: NSObject {
         }
     }
     
+    
+    /**
+    Initializes CoreData Manager. Basically, creates the first NSManagedObjectContext
+    
+    :param: style The style of the bicycle
+    :param: gearing The gearing of the bicycle
+    :param: handlebar The handlebar of the bicycle
+    :param: centimeters The frame size of the bicycle, in centimeters
+    
+    :returns: nothing.
+    */
 
     func initialize(){
         self.managedObjectContext
     }
     
-    // #pragma mark - Core Data stack
+    // MARK: Core Data stack
     
     var managedObjectContext: NSManagedObjectContext{
     
         if NSThread.isMainThread() {
             
-            if !_managedObjectContext {
-                let coordinator = self.persistentStoreCoordinator
-                if coordinator != nil {
+            if (_managedObjectContext == nil) {
+                if let coordinator = self.persistentStoreCoordinator  {
                     _managedObjectContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
                     _managedObjectContext!.persistentStoreCoordinator = coordinator
                 }
@@ -57,7 +67,7 @@ class CoreDataManager: NSObject {
             
         }else{
             
-            var threadContext : NSManagedObjectContext? = NSThread.currentThread().threadDictionary["NSManagedObjectContext"] as? NSManagedObjectContext;
+            var threadContext : NSManagedObjectContext? = NSThread.currentThread().threadDictionary!["NSManagedObjectContext"] as? NSManagedObjectContext;
             
             println(NSThread.currentThread().threadDictionary)
             
@@ -67,7 +77,7 @@ class CoreDataManager: NSObject {
                 threadContext!.parentContext = _managedObjectContext
                 threadContext!.name = NSThread.currentThread().description
                 
-                NSThread.currentThread().threadDictionary["NSManagedObjectContext"] = threadContext
+                NSThread.currentThread().threadDictionary!["NSManagedObjectContext"] = threadContext
                 
                 NSNotificationCenter.defaultCenter().addObserver(self, selector:"contextWillSave:" , name: NSManagedObjectContextWillSaveNotification, object: threadContext)
                 
@@ -85,9 +95,9 @@ class CoreDataManager: NSObject {
     // Returns the managed object model for the application.
     // If the model doesn't already exist, it is created from the application's model.
     var managedObjectModel: NSManagedObjectModel {
-    if !_managedObjectModel {
+    if _managedObjectModel == nil {
         let modelURL = NSBundle.mainBundle().URLForResource(kModmName, withExtension: "momd")
-        _managedObjectModel = NSManagedObjectModel(contentsOfURL: modelURL)
+        _managedObjectModel = NSManagedObjectModel(contentsOfURL: modelURL!)
         }
         return _managedObjectModel!
     }
@@ -95,8 +105,8 @@ class CoreDataManager: NSObject {
     
     // Returns the persistent store coordinator for the application.
     // If the coordinator doesn't already exist, it is created and the application's store added to it.
-    var persistentStoreCoordinator: NSPersistentStoreCoordinator {
-    if !_persistentStoreCoordinator {
+    var persistentStoreCoordinator: NSPersistentStoreCoordinator? {
+    if _persistentStoreCoordinator == nil {
         let storeURL = self.applicationDocumentsDirectory.URLByAppendingPathComponent(kStoreName)
         var error: NSError? = nil
         _persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
@@ -110,7 +120,7 @@ class CoreDataManager: NSObject {
     
 
     
-    // #pragma mark - fetches
+    // MARK: fetches
     
     func executeFetchRequest(request:NSFetchRequest)-> Array<AnyObject>?{
 
@@ -166,9 +176,9 @@ class CoreDataManager: NSObject {
                 
                 if context.parentContext != nil {
                     
-                    context.parentContext.performBlockAndWait{
+                    context.parentContext!.performBlockAndWait{
                         var saveError:NSError?
-                        let saved = context.parentContext.save(&saveError)
+                        let saved = context.parentContext!.save(&saveError)
                         
                         if !saved{
                             if let error = saveError{
