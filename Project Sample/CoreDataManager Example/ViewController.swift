@@ -16,7 +16,7 @@ class ViewController: UIViewController, UITableViewDelegate{
     @IBOutlet weak var actionButton : UIBarButtonItem!
     @IBOutlet weak var editButton : UIBarButtonItem!
     
-    var datasource : Array<AnyObject> = []
+    var datasource = [MonkeyEntity]()
     
     
     override func viewDidLoad() {
@@ -37,20 +37,22 @@ class ViewController: UIViewController, UITableViewDelegate{
     
     func refreshData(){
         
-        var request: NSFetchRequest = NSFetchRequest(entityName: "MonkeyEntity")
+        let request: NSFetchRequest = NSFetchRequest(entityName: "MonkeyEntity")
         request.sortDescriptors = [NSSortDescriptor(key: "name" , ascending: true)]
         
-        CoreDataManager.shared.executeFetchRequest(request) { results in
-            self.datasource = results!
-            self.tableView.reloadData()
+        CoreDataManager.sharedInstance.executeFetchRequest(request) { results in
+            if let results = results as? [MonkeyEntity]{
+                self.datasource = results
+                self.tableView.reloadData()
+            }
         }
         
     }
     
     func clearEntities(){
         
-        for item : AnyObject in datasource {
-            CoreDataManager.shared.deleteEntity(item as MonkeyEntity)
+        for item in datasource {
+            CoreDataManager.sharedInstance.deleteEntity(item)
         }
         self.datasource = []
         
@@ -65,29 +67,29 @@ class ViewController: UIViewController, UITableViewDelegate{
         return self.datasource.count
     }
     
-    func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell! {
+    func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell {
         
-        var cell:UITableViewCell = self.tableView.dequeueReusableCellWithIdentifier("cell") as UITableViewCell
+        let cell = self.tableView.dequeueReusableCellWithIdentifier("cell")
         
-        var monkey = self.datasource[indexPath.row] as MonkeyEntity
-        cell.textLabel?.text = monkey.name
+        let monkey = self.datasource[indexPath.row] as MonkeyEntity
+        cell?.textLabel?.text = monkey.name
         
-        return cell
+        return cell ?? UITableViewCell()
     }
     
     
-    func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!) {
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        var monkey = self.datasource[indexPath.row] as MonkeyEntity
-        monkey.name = NSString(format:"Monkey %.002d", indexPath.row)
+        let monkey = self.datasource[indexPath.row] as MonkeyEntity
+        monkey.name = "Monkey " + String(indexPath.row)
         
-        var alert: UIAlertController = UIAlertController(title: "monkey says", message: "aaaaggg agggg agggg", preferredStyle: .Alert)
-        var bananaOption = UIAlertAction(title: "Give banana", style: .Cancel) { action  in
+        let alert: UIAlertController = UIAlertController(title: "monkey says", message: "aaaaggg agggg agggg", preferredStyle: .Alert)
+        let bananaOption = UIAlertAction(title: "Give banana", style: .Cancel) { action  in
             monkey.name = "\(monkey.name) is grateful"
             self.tableView.reloadData()
             alert.dismissViewControllerAnimated(true, completion: nil)
         }
-        var neverOption = UIAlertAction(title: "Never!", style: .Destructive) { action  in
+        let neverOption = UIAlertAction(title: "Never!", style: .Destructive) { action  in
             monkey.name = "\(monkey.name) is angry"
             self.tableView.reloadData()
             alert.dismissViewControllerAnimated(true, completion: nil)
@@ -96,7 +98,7 @@ class ViewController: UIViewController, UITableViewDelegate{
         alert.addAction(neverOption)
 
         
-        self.presentViewController(alert, animated:true, nil)
+        self.presentViewController(alert, animated:true, completion: nil)
     }
     
 
@@ -105,35 +107,36 @@ class ViewController: UIViewController, UITableViewDelegate{
 
     @IBAction func actionButtonPressed(sender : AnyObject) {
         
-        var newMonkey: MonkeyEntity = NSEntityDescription.insertNewObjectForEntityForName("MonkeyEntity", inManagedObjectContext: CoreDataManager.shared.managedObjectContext) as MonkeyEntity
-        
-        newMonkey.name = NSString(format:"Monkey %.002d", self.datasource.count)
-        println("Inserted New Monkey...")
-        
-        refreshData()
+        if let newMonkey: MonkeyEntity = NSEntityDescription.insertNewObjectForEntityForName("MonkeyEntity", inManagedObjectContext: CoreDataManager.sharedInstance.managedObjectContext) as? MonkeyEntity {
+            
+            newMonkey.name = "Monkey " + String(self.datasource.count)
+            print("Inserted New Monkey...")
+            
+            refreshData()
+        }
     }
     
     
     @IBAction func editButtonPressed(sender : AnyObject) {
         
-        var alert: UIAlertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+        let alert: UIAlertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
 
-        var saveOption = UIAlertAction(title: "Save", style: .Default) { action  in
-            CoreDataManager.shared.save()
+        let saveOption = UIAlertAction(title: "Save", style: .Default) { action  in
+            CoreDataManager.sharedInstance.save()
             alert.dismissViewControllerAnimated(true, completion: nil)
         }
         
-        var reloadOption = UIAlertAction(title: "Reload", style: .Default) { action  in
+        let reloadOption = UIAlertAction(title: "Reload", style: .Default) { action  in
             self.tableView.reloadData()
             alert.dismissViewControllerAnimated(true, completion: nil)
         }
         
-        var destroyOption = UIAlertAction(title: "Delete All", style: .Destructive) { action  in
+        let destroyOption = UIAlertAction(title: "Delete All", style: .Destructive) { action  in
             self.clearEntities()
             alert.dismissViewControllerAnimated(true, completion: nil)
         }
         
-        var cancelOption = UIAlertAction(title: "Cancel", style: .Cancel) { action  in
+        let cancelOption = UIAlertAction(title: "Cancel", style: .Cancel) { action  in
             alert.dismissViewControllerAnimated(true, completion: nil)
         }
         
@@ -143,7 +146,7 @@ class ViewController: UIViewController, UITableViewDelegate{
         alert.addAction(cancelOption)
 
         
-        self.presentViewController(alert, animated:true, nil)
+        self.presentViewController(alert, animated:true, completion: nil)
     }
     
     

@@ -219,6 +219,7 @@
 		79A95497194A7516000FA883 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0730;
 				LastUpgradeCheck = 0600;
 				ORGANIZATIONNAME = MMS;
 				TargetAttributes = {
